@@ -144,3 +144,44 @@
     background: rgba(148, 163, 184, 0.5);
   }
 }
+
+/* Critical animations for LCP element - CSS only, no JS blocking */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+.animate-fade-in-delay {
+  animation: fade-in 0.4s ease-out 0.1s forwards;
+  opacity: 0;
+}
+
+/* Cyber Grid Background - Pure CSS, no JS blocking */
+.cyber-grid-bg {
+  background-image: 
+    linear-gradient(rgba(251, 191, 36, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(251, 191, 36, 0.1) 1px, transparent 1px),
+    linear-gradient(rgba(251, 191, 36, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(251, 191, 36, 0.08) 1px, transparent 1px);
+  background-size: 
+    60px 60px,
+    60px 60px,
+    120px 120px,
+    120px 120px;
+  background-position: 
+    0 0,
+    0 0,
+    30px 30px,
+    30px 30px;
+  opacity: 0.15;
+}
