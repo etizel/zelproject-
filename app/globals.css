@@ -45,7 +45,8 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  /* MUDANÇA 1: Aplica a cor LAB solicitada como background padrão (Light Mode) */
+  --background: lab(2.75381 0 0); 
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
@@ -79,7 +80,8 @@
 }
 
 .dark {
-  --background: oklch(0.141 0.005 285.823);
+  /* MUDANÇA 2: Aplica a cor LAB solicitada também no modo Dark */
+  --background: lab(2.75381 0 0); 
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.21 0.006 285.885);
   --card-foreground: oklch(0.985 0 0);
@@ -117,7 +119,9 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-neutral-950 text-slate-200;
+    /* MUDANÇA 3: Remove bg-neutral-950 do Tailwind e usa diretamente a variável CSS. */
+    background-color: var(--background);
+    @apply text-slate-200;
     margin: 0;
     padding: 0;
   }
@@ -157,12 +161,43 @@
   }
 }
 
+@keyframes fade-in-up-keyframe {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
 .animate-fade-in {
   animation: fade-in 0.4s ease-out forwards;
 }
 
+.animate-fade-in-up {
+  opacity: 0;
+  animation: fade-in-up-keyframe 0.7s ease-out forwards;
+}
+
 .animate-fade-in-delay {
   animation: fade-in 0.4s ease-out 0.1s forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-delay-2 {
+  animation: fade-in 0.4s ease-out 0.15s forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-delay-3 {
+  animation: fade-in 0.4s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-delay-4 {
+  animation: fade-in 0.4s ease-out 0.25s forwards;
   opacity: 0;
 }
 
@@ -184,4 +219,18 @@
     30px 30px,
     30px 30px;
   opacity: 0.15;
+}
+
+/* MUDANÇA 4: Classe utilitária para o efeito de vidro minimalista */
+.glass-clean {
+  background: transparent;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.918);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0); /* Borda interna sutil */
+  transition: all 0.3s ease;
+}
+
+.glass-clean:hover {
+  border-color: rgba(255, 255, 255, 0.616);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); /* Brilho externo */
 }

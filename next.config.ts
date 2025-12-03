@@ -14,13 +14,25 @@ const nextConfig: NextConfig = {
   
   // Experimental features for better performance
   experimental: {
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
+    optimizePackageImports: ['lucide-react'],
+    // Remove framer-motion from optimizePackageImports since we're minimizing its use
   },
+  
+  // Production optimizations
+  
+  // Compiler optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
+  },
+  
+  // Output configuration for better tree-shaking
+  output: 'standalone',
   
   // Turbopack configuration (Next.js 16+ uses Turbopack by default)
   turbopack: {
-    // Turbopack handles code splitting automatically and efficiently
-    // No manual configuration needed for bundle splitting
+    root: './',
   },
   
   // Webpack config for fallback (when using --webpack flag)

@@ -1,36 +1,36 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
+import Header from '@/components/Header';
 import Hero from '@/components/Hero';
-
-// Lazy load components below the fold with SSR disabled
+import LazySection from '@/components/LazySection';
+import ContactSection from '@/components/ContactSection';
+// Lazy load components below the fold with SSR disabled and intersection observer
 const ExperienceTimeline = dynamic(
   () => import('@/components/ExperienceTimeline'),
   {
     ssr: false,
-    loading: () => null,
   },
 );
 
 const BentoGrid = dynamic(() => import('@/components/BentoGrid'), {
   ssr: false,
-  loading: () => null,
 });
 
 const ProjectsSection = dynamic(() => import('@/components/ProjectsSection'), {
   ssr: false,
-  loading: () => null,
 });
 
 const Footer = dynamic(() => import('@/components/Footer'), {
   ssr: false,
-  loading: () => null,
 });
 
 export default function Home() {
   return (
     <main className="relative min-h-screen bg-neutral-950 text-slate-200">
+      {/* Header fixo no topo */}
+      <Header />
+
       {/* Deep Void Background - Pure Black */}
       <div className="fixed inset-0 bg-[#050505] -z-10"></div>
 
@@ -38,21 +38,25 @@ export default function Home() {
       <div className="relative z-10">
         <Hero />
 
-        <Suspense fallback={null}>
+        <LazySection>
           <ExperienceTimeline />
-        </Suspense>
+        </LazySection>
 
-        <Suspense fallback={null}>
+        <LazySection>
           <BentoGrid />
-        </Suspense>
+        </LazySection>
 
-        <Suspense fallback={null}>
+        <LazySection>
           <ProjectsSection />
-        </Suspense>
+        </LazySection>
 
-        <Suspense fallback={null}>
+        <LazySection>
+          <ContactSection />
+        </LazySection>
+
+        <LazySection>
           <Footer />
-        </Suspense>
+        </LazySection>
       </div>
     </main>
   );

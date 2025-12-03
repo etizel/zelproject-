@@ -55,24 +55,79 @@ export function CardContainer({
     ['-17.5deg', '17.5deg'],
   );
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  // Cache dimensions to avoid forced reflows - only measure on mount/resize
+  const dimensionsRef = useRef<{ width: number; height: number } | null>(null);
+  const rafIdRef = useRef<number | null>(null);
+
+  // Measure on mount and resize using ResizeObserver (non-blocking, async)
+  React.useEffect(() => {
     if (!ref.current) return;
 
+    const updateDimensions = () => {
+      if (ref.current) {
+        // Use offsetWidth/offsetHeight instead of getBoundingClientRect for initial measurement
+        dimensionsRef.current = {
+          width: ref.current.offsetWidth,
+          height: ref.current.offsetHeight,
+        };
+      }
+    };
+
+    // Initial measurement
+    updateDimensions();
+
+    // Use ResizeObserver for responsive updates (non-blocking)
+    const resizeObserver = new ResizeObserver(() => {
+      updateDimensions();
+    });
+
+    resizeObserver.observe(ref.current);
+    return () => {
+      resizeObserver.disconnect();
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+    };
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current || !dimensionsRef.current) return;
+
+    const { width, height } = dimensionsRef.current;
+    
+    // Calculate relative position without getBoundingClientRect
     const rect = ref.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
     const xPct = mouseX / width - 0.5;
     const yPct = mouseY / height - 0.5;
-    x.set(xPct);
-    y.set(yPct);
+    
+    // Cancel previous RAF to debounce and batch updates
+    if (rafIdRef.current) {
+      cancelAnimationFrame(rafIdRef.current);
+    }
+    
+    // Use requestAnimationFrame to batch updates and avoid blocking main thread
+    rafIdRef.current = requestAnimationFrame(() => {
+      x.set(xPct);
+      y.set(yPct);
+      rafIdRef.current = null;
+    });
   };
 
   const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-    setIsHovered(false);
+    // Cancel any pending RAF
+    if (rafIdRef.current) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
+    
+    // Use RAF for smooth exit animation
+    requestAnimationFrame(() => {
+      x.set(0);
+      y.set(0);
+      setIsHovered(false);
+    });
   };
 
   return (
