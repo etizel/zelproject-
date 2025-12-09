@@ -38,7 +38,7 @@ const contactLinks: ContactLink[] = [
 const ContactSection: React.FC = () => {
   return (
     <section
-      id="contact"
+      id="contato"
       className="relative py-20 md:py-32 px-4 overflow-hidden bg-neutral-950/50"
     >
       {/* 1. Luz de fundo sutil para dar profundidade (Glow) */}
@@ -63,8 +63,8 @@ const ContactSection: React.FC = () => {
             </h2>
 
             <p className="text-lg text-slate-400 text-center max-w-3xl mb-12 font-light">
-              Auditoria de Perdas e Implementação de Estratégias de Supply
-              Chain. Vamos conectar para otimizar seus processos.
+              Auditorias e Implementação de Estratégias. Vamos conectar para
+              otimizar seus processos.
             </p>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 justify-center items-center gap-4 md:gap-8 w-full max-w-4xl">

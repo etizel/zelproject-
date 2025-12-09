@@ -73,7 +73,7 @@ const ProjectsSection: React.FC = () => {
       title: 'Projeto MLCP',
       category: 'Logística & Prevenção',
       description:
-        'Manual de Logística e Controle de Perdas. Estudo de caso completo com documentação técnica e implementação de processos.',
+        'Framework proprietário de engenharia logística que utiliza física aplicada e zoneamento hierárquico para otimizar o empacotamento. Garante >85% de aproveitamento de volume e reduz avarias para <2%, transformando a expedição em um processo preditivo e escalável.',
       type: 'pdf',
       link: '/projects/mlcp-doc.pdf', // Coloque seu PDF na pasta public/projects
       imagePath: '/projects/mlcp-cover.png',
@@ -84,7 +84,7 @@ const ProjectsSection: React.FC = () => {
       title: 'Acervo GT',
       category: 'Desenvolvimento Frontend',
       description:
-        'Coleção com mais de 30 projetos práticos de aprendizado em JavaScript, HTML e CSS. A evolução da minha jornada inicialo como dev.',
+        'Coleção com mais de 30 projetos práticos de aprendizado em JavaScript, HTML e CSS. A evolução da minha jornada inicial como dev.',
       type: 'github',
       link: 'https://github.com/etizel/Acervo-GT', // Seu link do repositório
       imagePath: '/projects/gt-cover.jpeg',
@@ -92,7 +92,7 @@ const ProjectsSection: React.FC = () => {
     },
     {
       id: 3,
-      title: 'Animais Fantasticos',
+      title: 'Animais Fantásticos',
       category: 'Web Design',
       description:
         'Site interativo com galeria de animais fantásticos. Foco em grid layout, animações CSS e responsividade mobile.',
@@ -103,7 +103,7 @@ const ProjectsSection: React.FC = () => {
     },
     {
       id: 4,
-      title: 'Targuês Escola de Música',
+      title: 'Targues Escola de Música',
       category: 'Landing Page',
       description:
         'Plataforma para escola de música com agendamento e apresentação de cursos. Layout moderno e acessível.',
@@ -163,7 +163,7 @@ const ProjectsSection: React.FC = () => {
         <div className="max-w-7xl mx-auto mb-16 text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-extrabold font-mono tracking-tight drop-shadow-lg mb-4">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-slate-200 to-slate-500">
-              Artifacts de Performance
+              Artefatos & Performance
             </span>
           </h2>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto font-light">

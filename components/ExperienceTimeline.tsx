@@ -1,9 +1,6 @@
 'use client';
 
 import { Briefcase } from 'lucide-react';
-// REMOVIDA: A referência ao componente ScrollReveal (mock) foi removida
-// para isolar a causa do TypeError, que parece estar relacionado ao carregamento
-// de módulos ou ferramentas de terceiros (como extensões ou Turbopack).
 
 interface TimelineItem {
   id: number;
@@ -82,19 +79,23 @@ const timelineData: TimelineItem[] = [
   return yearB - yearA;
 });
 
-// REMOVIDA: A definição do Mock do componente ScrollReveal foi removida.
-// const ScrollReveal: React.FC<{ children: React.ReactNode; delay: number }> = ({ children }) => <>{children}</>;
-
 export default function ExperienceTimeline() {
-  // 1. KEYFRAMES CSS para o fluxo da luz (Definido embutido para ser self-contained)
-  // O keyframe 'flow-up' move um elemento de 100% (abaixo da tela) até -100% (acima da tela),
-  // criando um loop contínuo e fluido.
+  // Funcao mock para o clique
+  const handleItemClick = (item: TimelineItem) => {
+    // Substitua este console.log pela lógica real (ex: abrir modal de detalhes)
+    console.log(`Detalhes da Experiência: ${item.title} em ${item.company}`);
+  };
+
   const customStyles = `
     @keyframes flow-up {
-      0% { transform: translateY(100%); opacity: 0.2; }
+        /* Ponto de partida invisível (abaixo da linha) */
+      0% { transform: translateY(100%); opacity: 0; } 
+        /* Começa a aparecer */
       5% { opacity: 1; }
+        /* Mantém o brilho */
       95% { opacity: 1; }
-      100% { transform: translateY(-100%); opacity: 0.2; }
+        /* Termina invisível (acima da linha) */
+      100% { transform: translateY(-100%); opacity: 0; } 
     }
   `;
 
@@ -122,8 +123,9 @@ export default function ExperienceTimeline() {
             <div
               className="absolute left-1/2 -ml-[2px] w-1 h-1 rounded-full bg-amber-300 shadow-[0_0_20px_6px_#fbbf24]"
               style={{
-                animation: 'flow-up 3.6s linear infinite', // Duração ajustada para 4s (mais rápido e fluido)
-                top: '100%', // Ponto de partida (100% da altura da linha)
+                // Duração ajustada para 6s, criando um fluxo contínuo e suave
+                animation: 'flow-up 6s linear infinite',
+                top: '0%',
                 zIndex: 10,
               }}
             />
@@ -132,7 +134,6 @@ export default function ExperienceTimeline() {
           {/* Items */}
           <div className="space-y-16 md:space-y-24">
             {timelineData.map((item, index) => (
-              // Substituímos o ScrollReveal pelo seu children diretamente
               <div key={item.id}>
                 <div
                   className={`relative flex flex-col md:flex-row items-center gap-8 ${
@@ -145,8 +146,13 @@ export default function ExperienceTimeline() {
                   {/* Card de Conteúdo - Wrapper para o efeito de hover */}
                   <div className="w-full md:w-1/2 pl-20 md:pl-0 group">
                     <div
-                      // ESTILO SLIM & SOPHISTICATED (Transparente Total + Glass Sutil no Hover)
+                      // Implementação do Clique e Cursor
+                      onClick={() => handleItemClick(item)}
+                      role="button" // Acessibilidade
+                      tabIndex={0} // Acessibilidade via Teclado
+                      // ESTILO SLIM & SOPHISTICATED
                       className={`relative p-6 rounded-2xl border border-white/5 bg-neutral-950/5 backdrop-blur-3xl transition-all duration-500 
+                        cursor-pointer 
                         hover:border-amber-500/50 hover:bg-neutral-900/30 
                         hover:shadow-[0_0_40px_-10px_rgba(245,158,11,0.3)] 
                         ${
@@ -155,8 +161,6 @@ export default function ExperienceTimeline() {
                             : 'md:ml-12 text-right'
                         }`}
                     >
-                      {/* Triângulo de ponteiro (apenas para desktop) foi removido aqui */}
-
                       {/* Header do Card */}
                       <div className="flex flex-wrap items-center justify-between mb-2 gap-2">
                         <span className="px-3 py-1 text-xs font-mono text-amber-500 bg-amber-500/10 rounded-full border border-amber-500/20">
