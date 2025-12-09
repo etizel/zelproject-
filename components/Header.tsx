@@ -11,10 +11,10 @@ export default function Header() {
         <Link href="/" className="h-full flex items-center">
           {/* CAMINHO CORRIGIDO: Use o nome exato do arquivo (Etizel.png) */}
           <img
-            src="/projects/Etizel.png"
+            src="/projects/Etizel.png "
             alt="Etizel Azevedo Logo"
             // Aumentamos h-8 para h-12 e md:h-9 para md:h-14
-            className="h-20 md:h-20 w-auto object-contain"
+            className="h-14 md:h-14 w-auto object-contain"
           />
         </Link>
 
