@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   FileText,
   Github,
@@ -8,50 +9,85 @@ import {
   ArrowUpRight,
   Box,
   Layers,
-  X, // Adicionado para o botão fechar do modal
+  Brain,
+  X,
+  Maximize2,
+  Minimize2,
 } from 'lucide-react';
+import ProtocoloMineracaoEnem from '@/components/ProtocoloMineracaoEnem';
 
-// Definição dos Tipos de Projeto
 interface Project {
   id: number;
   title: string;
   category: string;
   description: string;
-  imagePath?: string; // Caminho da imagem na pasta public
-  link: string; // Link para site, github ou caminho do PDF
-  type: 'pdf' | 'github' | 'website'; // Tipo para decidir o ícone
-  techs: string[]; // Lista de tecnologias usadas
+  imagePath?: string;
+  link: string;
+  type: 'pdf' | 'github' | 'website' | 'interactive';
+  techs: string[];
 }
 
-// Tipos para o Modal
 interface ModalState {
   isOpen: boolean;
+  mode: 'image' | 'document' | null;
   imageUrl: string | null;
   title: string | null;
+  documentUrl: string | null;
 }
 
+const PROTOCOLO_ENEM_PATH = '/protocolo-mineracao-enem';
+
 const ProjectsSection: React.FC = () => {
-  // Estado para controlar o modal de visualização de imagem
   const [modalState, setModalState] = useState<ModalState>({
     isOpen: false,
+    mode: null,
     imageUrl: null,
     title: null,
+    documentUrl: null,
   });
+  const [documentExpanded, setDocumentExpanded] = useState(false);
+  const [portalMounted, setPortalMounted] = useState(false);
 
-  // Função para abrir o modal
-  const openModal = (imageUrl: string, title: string) => {
-    setModalState({ isOpen: true, imageUrl, title });
-    // Opcional: Adicionar classe para prevenir scroll no body
+  useEffect(() => {
+    setPortalMounted(true);
+  }, []);
+
+  const openImageModal = (imageUrl: string, title: string) => {
+    setDocumentExpanded(false);
+    setModalState({
+      isOpen: true,
+      mode: 'image',
+      imageUrl,
+      title,
+      documentUrl: null,
+    });
     document.body.style.overflow = 'hidden';
   };
 
-  // Função para fechar o modal
+  const openDocumentModal = (title: string, documentUrl: string) => {
+    setDocumentExpanded(false);
+    setModalState({
+      isOpen: true,
+      mode: 'document',
+      imageUrl: null,
+      title,
+      documentUrl,
+    });
+    document.body.style.overflow = 'hidden';
+  };
+
   const closeModal = () => {
-    setModalState({ isOpen: false, imageUrl: null, title: null });
+    setDocumentExpanded(false);
+    setModalState({
+      isOpen: false,
+      mode: null,
+      imageUrl: null,
+      title: null,
+      documentUrl: null,
+    });
     document.body.style.overflow = 'unset';
   };
 
-  // Efeito para fechar o modal com a tecla ESC
   React.useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -66,7 +102,6 @@ const ProjectsSection: React.FC = () => {
     };
   }, [modalState.isOpen]);
 
-  // SEUS DADOS: Aqui configuramos os 4 Cards
   const projects: Project[] = [
     {
       id: 1,
@@ -75,7 +110,7 @@ const ProjectsSection: React.FC = () => {
       description:
         'Framework proprietário de engenharia logística que utiliza física aplicada e zoneamento hierárquico para otimizar o empacotamento. Garante >85% de aproveitamento de volume e reduz avarias para <2%, transformando a expedição em um processo preditivo e escalável.',
       type: 'pdf',
-      link: '/projects/mlcp-doc.pdf', // Coloque seu PDF na pasta public/projects
+      link: '/projects/mlcp-doc.pdf',
       imagePath: '/projects/mlcp-cover.png',
       techs: ['Gestão', 'Auditoria', 'PDF Documentation'],
     },
@@ -86,7 +121,7 @@ const ProjectsSection: React.FC = () => {
       description:
         'Coleção com mais de 30 projetos práticos de aprendizado em JavaScript, HTML e CSS. A evolução da minha jornada inicial como dev.',
       type: 'github',
-      link: 'https://github.com/etizel/Acervo-GT', // Seu link do repositório
+      link: 'https://github.com/etizel/Acervo-GT',
       imagePath: '/projects/gt-cover.jpeg',
       techs: ['JavaScript', 'HTML5', 'CSS3', 'DOM Manipulation'],
     },
@@ -97,7 +132,7 @@ const ProjectsSection: React.FC = () => {
       description:
         'Site interativo com galeria de animais fantásticos. Foco em grid layout, animações CSS e responsividade mobile.',
       type: 'website',
-      link: 'https://etizel.github.io/animais-fantasticos/', // Exemplo de link
+      link: 'https://etizel.github.io/animais-fantasticos/',
       imagePath: '/projects/animals-cover.png',
       techs: ['CSS Grid', 'Responsive', 'UI/UX'],
     },
@@ -108,13 +143,23 @@ const ProjectsSection: React.FC = () => {
       description:
         'Plataforma para escola de música com agendamento e apresentação de cursos. Layout moderno e acessível.',
       type: 'website',
-      link: 'https://targues.com/', // Exemplo de link
+      link: 'https://targues.com/',
       imagePath: '/projects/targues.png',
       techs: ['Landing Page', 'Forms', 'Design System'],
     },
+    {
+      id: 5,
+      title: 'Mineração da prova ENEM ~ 1.000 questões e 3 relatórios completos',
+      category: 'Estratégia & Cognição',
+      description:
+        'Protocolo estratégico sobre 24 provas e ~1.000 questões integrando três relatórios: Linguagens 2020, Matemática 2020–2026 e DNA microscópico. Anatomia do item, padrões TRI, vocabulário crítico e projeções 2026.',
+      type: 'interactive',
+      link: PROTOCOLO_ENEM_PATH,
+      imagePath: '/projects/enem-mineracao-cover.svg',
+      techs: ['ENEM', '~1.000 questões', '3 relatórios', 'TRI'],
+    },
   ];
 
-  // Função auxiliar para renderizar o ícone baseado no tipo
   const getIcon = (type: string) => {
     switch (type) {
       case 'pdf':
@@ -123,22 +168,25 @@ const ProjectsSection: React.FC = () => {
         return <Github size={20} />;
       case 'website':
         return <Globe size={20} />;
+      case 'interactive':
+        return <Maximize2 size={20} />;
       default:
         return <ArrowUpRight size={20} />;
     }
   };
 
-  // Função para ícone decorativo do card
   const getThemeIcon = (id: number) => {
     switch (id) {
       case 1:
         return <Box className="text-amber-500" />;
       case 2:
-        return <Layers className="text-cyan-400" />; // Azul/Cyan para mais variedade
+        return <Layers className="text-cyan-400" />;
       case 3:
         return <Cat className="text-emerald-500" />;
       case 4:
         return <Music className="text-purple-500" />;
+      case 5:
+        return <Brain className="text-amber-400" />;
       default:
         return <Globe className="text-gray-500" />;
     }
@@ -150,16 +198,14 @@ const ProjectsSection: React.FC = () => {
         className="relative py-24 px-4 overflow-hidden bg-neutral-950/50"
         id="projects"
       >
-        {/* Luz de fundo sutil para dar profundidade (Glow) */}
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-4xl opacity-10 pointer-events-none"
           style={{
             background:
-              'radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 60%)', // Amber sutil
+              'radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 60%)',
           }}
         />
 
-        {/* Título da Seção */}
         <div className="max-w-7xl mx-auto mb-16 text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-extrabold font-mono tracking-tight drop-shadow-lg mb-4">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-slate-200 to-slate-500">
@@ -175,33 +221,36 @@ const ProjectsSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Grid de Projetos */}
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
           {projects.map((project) => (
             <div
               key={project.id}
-              className="group relative rounded-3xl border border-white/10 bg-neutral-900/50 backdrop-blur-sm overflow-hidden transition-all duration-500 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/10 flex flex-col hover:-translate-y-1"
+              className={`group relative rounded-3xl border bg-neutral-900/50 backdrop-blur-sm overflow-hidden transition-all duration-500 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/10 flex flex-col hover:-translate-y-1 ${
+                project.type === 'interactive'
+                  ? 'border-amber-500/25 ring-1 ring-amber-500/10'
+                  : 'border-white/10'
+              }`}
             >
-              {/* Container que abre o Modal (apenas se houver imagePath) */}
               <div
                 className={`h-48 md:h-64 w-full overflow-hidden relative bg-neutral-800 ${
-                  project.imagePath ? 'cursor-zoom-in' : ''
+                  project.imagePath || project.type === 'interactive'
+                    ? 'cursor-pointer'
+                    : ''
                 }`}
-                onClick={() =>
-                  project.imagePath &&
-                  openModal(project.imagePath, project.title)
-                }
+                onClick={() => {
+                  if (project.type === 'interactive') {
+                    openDocumentModal(project.title, project.link);
+                  } else if (project.imagePath) {
+                    openImageModal(project.imagePath, project.title);
+                  }
+                }}
               >
-                {/* Área da Imagem (Topo do Card) */}
-
-                {/* Se tiver imagem, mostra ela. Se não, mostra um gradiente fallback */}
                 {project.imagePath ? (
                   <img
                     src={project.imagePath}
                     alt={project.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
                     onError={(e) => {
-                      // Fallback se a imagem não existir
                       e.currentTarget.style.display = 'none';
                       e.currentTarget.parentElement?.classList.add(
                         'fallback-gradient',
@@ -214,22 +263,23 @@ const ProjectsSection: React.FC = () => {
                   </div>
                 )}
 
-                {/* Overlay Gradient para texto ficar legível */}
                 <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-neutral-950/40 to-transparent" />
 
-                {/* Categoria flutuante */}
-                <div className="absolute top-4 left-4">
+                <div className="absolute top-4 left-4 flex flex-wrap gap-2">
                   <span className="px-3 py-1 rounded-full text-xs font-semibold bg-black/50 border border-amber-500/20 text-amber-400 backdrop-blur-md">
                     {project.category}
                   </span>
+                  {project.type === 'interactive' && (
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-600/20 border border-amber-500/40 text-amber-300 backdrop-blur-md">
+                      Artefato especial
+                    </span>
+                  )}
                 </div>
               </div>
 
-              {/* Conteúdo do Card */}
               <div className="p-6 md:p-8 flex-1 flex flex-col">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center gap-3">
-                    {/* Icone Decorativo com Glow */}
                     <div className="p-2 rounded-lg bg-white/5 border border-white/10 group-hover:border-amber-500/50 group-hover:shadow-[0_0_10px_rgba(251,191,36,0.5)] transition-all duration-300">
                       {getThemeIcon(project.id)}
                     </div>
@@ -243,7 +293,6 @@ const ProjectsSection: React.FC = () => {
                   {project.description}
                 </p>
 
-                {/* Tags de Tecnologia */}
                 <div className="flex flex-wrap gap-2 mb-8">
                   {project.techs.map((tech, idx) => (
                     <span
@@ -255,12 +304,24 @@ const ProjectsSection: React.FC = () => {
                   ))}
                 </div>
 
-                {/* Botão de Ação */}
-                <a
-                  href={project.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`
+                {project.type === 'interactive' ? (
+                  <button
+                    type="button"
+                    className="w-full py-3 px-6 rounded-xl flex items-center justify-center gap-3 font-semibold text-base transition-all duration-300 bg-amber-600/10 text-amber-400 border border-amber-600/20 hover:bg-amber-600 hover:text-white hover:border-amber-600"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openDocumentModal(project.title, project.link);
+                    }}
+                  >
+                    <span>Explorar protocolo</span>
+                    {getIcon(project.type)}
+                  </button>
+                ) : (
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`
                     w-full py-3 px-6 rounded-xl flex items-center justify-center gap-3 font-semibold text-base transition-all duration-300
                     ${
                       project.type === 'pdf'
@@ -268,53 +329,121 @@ const ProjectsSection: React.FC = () => {
                         : 'bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10 hover:text-white'
                     }
                   `}
-                  onClick={(e) => {
-                    // Previne que o clique no botão abra o modal (caso ele esteja no container pai)
-                    e.stopPropagation();
-                  }}
-                >
-                  <span>
-                    {project.type === 'pdf'
-                      ? 'Visualizar Documento'
-                      : project.type === 'github'
-                      ? 'Acessar Repositório'
-                      : 'Visitar Website'}
-                  </span>
-                  {getIcon(project.type)}
-                </a>
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <span>
+                      {project.type === 'pdf'
+                        ? 'Visualizar Documento'
+                        : project.type === 'github'
+                          ? 'Acessar Repositório'
+                          : 'Visitar Website'}
+                    </span>
+                    {getIcon(project.type)}
+                  </a>
+                )}
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* MODAL DE VISUALIZAÇÃO DE IMAGEM */}
-      {modalState.isOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 transition-opacity duration-300"
-          onClick={closeModal} // Fecha ao clicar no backdrop
+      {portalMounted &&
+        modalState.isOpen &&
+        createPortal(
+          <div
+            className={`fixed inset-0 z-[9999] flex bg-black/85 backdrop-blur-md transition-opacity duration-300 ${
+              modalState.mode === 'document' && documentExpanded
+                ? 'p-0'
+                : 'items-center justify-center p-3 md:p-6'
+            }`}
+          onClick={closeModal}
+          role="dialog"
+          aria-modal="true"
+          aria-label={modalState.title || 'Visualização do projeto'}
         >
           <div
-            className="relative bg-neutral-900 rounded-xl max-w-full max-h-full overflow-hidden shadow-2xl border border-amber-500/50 animate-fade-in-scale"
-            onClick={(e) => e.stopPropagation()} // Impede que o clique no modal feche-o
+            className={`relative bg-neutral-900 overflow-hidden shadow-2xl border border-amber-500/50 flex flex-col transition-all duration-300 ${
+              modalState.mode === 'document'
+                ? documentExpanded
+                  ? 'w-full h-full max-w-none max-h-none rounded-none'
+                  : 'w-full max-w-4xl max-h-[90vh] rounded-xl'
+                : 'max-w-full max-h-full rounded-xl'
+            }`}
+            onClick={(e) => e.stopPropagation()}
           >
-            <button
-              onClick={closeModal}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors"
-              aria-label={`Fechar visualização de ${modalState.title}`}
-            >
-              <X size={24} />
-            </button>
+            {modalState.mode === 'document' && (
+              <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-white/10 bg-neutral-950/95 shrink-0 z-10">
+                <div className="min-w-0 pr-2">
+                  <p className="text-[10px] font-semibold tracking-widest uppercase text-amber-500/90">
+                    Artefato especial · Protocolo ENEM
+                  </p>
+                  <h3 className="text-sm md:text-base font-semibold text-slate-100 truncate">
+                    {modalState.title}
+                  </h3>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setDocumentExpanded((v) => !v)}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:text-amber-400 hover:bg-white/5 transition-colors"
+                    aria-label={
+                      documentExpanded
+                        ? 'Reduzir painel'
+                        : 'Ampliar em tela cheia'
+                    }
+                  >
+                    {documentExpanded ? (
+                      <Minimize2 size={16} />
+                    ) : (
+                      <Maximize2 size={16} />
+                    )}
+                    <span className="hidden sm:inline">
+                      {documentExpanded ? 'Reduzir' : 'Ampliar'}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-200 bg-amber-600/20 border border-amber-500/40 hover:bg-amber-600 hover:text-white transition-colors"
+                    aria-label="Fechar protocolo"
+                  >
+                    <X size={16} />
+                    <span className="hidden sm:inline">Fechar</span>
+                  </button>
+                </div>
+              </div>
+            )}
 
-            <img
-              src={modalState.imageUrl || ''}
-              alt={modalState.title || 'Imagem do Projeto'}
-              className="max-w-[90vw] max-h-[90vh] object-contain block"
-              style={{ minHeight: '30vh' }}
-            />
+            {modalState.mode === 'image' && (
+              <>
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors"
+                  aria-label={`Fechar visualização de ${modalState.title}`}
+                >
+                  <X size={24} />
+                </button>
+                <img
+                  src={modalState.imageUrl || ''}
+                  alt={modalState.title || 'Imagem do Projeto'}
+                  className="max-w-[90vw] max-h-[90vh] object-contain block"
+                  style={{ minHeight: '30vh' }}
+                />
+              </>
+            )}
+
+            {modalState.mode === 'document' && (
+              <div className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-8 min-h-0">
+                <ProtocoloMineracaoEnem />
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        </div>,
+          document.body,
+        )}
     </>
   );
 };

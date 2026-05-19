@@ -1,44 +1,38 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
+import path from 'path';
+
+const projectRoot = path.resolve(process.cwd());
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
-  
-  // Performance optimizations
   compress: true,
-  
-  // Optimize images
+
   images: {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 60,
   },
-  
-  // Experimental features for better performance
+
   experimental: {
     optimizePackageImports: ['lucide-react'],
-    // Remove framer-motion from optimizePackageImports since we're minimizing its use
+    // Corrige falhas TLS ao baixar recursos (ex.: fontes) no Windows com proxy/antivírus
+    turbopackUseSystemTlsCerts: true,
   },
-  
-  // Production optimizations
-  
-  // Compiler optimizations
+
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production' ? {
-      exclude: ['error', 'warn'],
-    } : false,
+    removeConsole:
+      process.env.NODE_ENV === 'production'
+        ? {
+            exclude: ['error', 'warn'],
+          }
+        : false,
   },
-  
-  // Output configuration for better tree-shaking
-  output: 'standalone',
-  
-  // Turbopack configuration (Next.js 16+ uses Turbopack by default)
+
   turbopack: {
-    root: './',
+    root: projectRoot,
   },
-  
-  // Webpack config for fallback (when using --webpack flag)
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      // Optimize bundle splitting for webpack
       config.optimization = {
         ...config.optimization,
         splitChunks: {
@@ -46,7 +40,6 @@ const nextConfig: NextConfig = {
           cacheGroups: {
             default: false,
             vendors: false,
-            // Separate vendor chunks
             framerMotion: {
               name: 'framer-motion',
               test: /[\\/]node_modules[\\/]framer-motion[\\/]/,

@@ -1,26 +1,10 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-  display: 'swap',
-  preload: true,
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-  display: 'swap',
-  preload: true,
-});
 
 export const metadata: Metadata = {
   title: 'Etizel · Arquitetura Digital & Inteligência Operacional',
   description:
     'Transformando processos complexos (600+ SKUs) em interfaces fluidas. Fullstack Developer & Supply Chain Specialist.',
-  // Performance hints
   other: {
     'mobile-web-app-capable': 'yes',
   },
@@ -33,9 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className="dark">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-neutral-950 text-slate-200`}
-      >
+      <body className="font-sans antialiased bg-neutral-950 text-slate-200">
         {children}
       </body>
     </html>

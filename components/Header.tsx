@@ -8,14 +8,11 @@ export default function Header() {
     <header className="fixed top-0 w-full z-50 bg-black/30 backdrop-blur-md border-b border-white/5 h-16">
       <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Título/Logo à esquerda */}
-        <Link href="/" className="h-full flex items-center">
-          {/* CAMINHO CORRIGIDO: Use o nome exato do arquivo (Etizel.png) */}
-          <img
-            src="/projects/Etizel.png "
-            alt="Etizel Azevedo Logo"
-            // Aumentamos h-8 para h-12 e md:h-9 para md:h-14
-            className="h-14 md:h-14 w-auto object-contain"
-          />
+        <Link
+          href="/"
+          className="h-full flex items-center font-mono text-lg font-bold tracking-tight text-slate-100 hover:text-amber-400 transition-colors"
+        >
+          Etizel
         </Link>
 
         {/* Botões à direita */}
