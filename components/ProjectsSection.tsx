@@ -152,7 +152,7 @@ const ProjectsSection: React.FC = () => {
       title: 'Mineração da prova ENEM ~ 1.000 questões e 3 relatórios completos',
       category: 'Estratégia & Cognição',
       description:
-        'Protocolo estratégico sobre 24 provas e ~1.000 questões integrando três relatórios: Linguagens 2020, Matemática 2020–2026 e DNA microscópico. Anatomia do item, padrões TRI, vocabulário crítico e projeções 2026.',
+        'Protocolo estratégico sobre 24 provas e ~1.000 questões integrando três relatórios: Linguagens 2020, Matemática 2020-2026 e DNA microscópico. Anatomia do item, padrões TRI, vocabulário crítico e projeções 2026.',
       type: 'interactive',
       link: PROTOCOLO_ENEM_PATH,
       imagePath: '/projects/enem-mineracao-cover.svg',
@@ -377,7 +377,7 @@ const ProjectsSection: React.FC = () => {
               <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-white/10 bg-neutral-950/95 shrink-0 z-10">
                 <div className="min-w-0 pr-2">
                   <p className="text-[10px] font-semibold tracking-widest uppercase text-amber-500/90">
-                    Artefato especial · Protocolo ENEM
+                    Artefato especial · Protocolo ENEM 2026
                   </p>
                   <h3 className="text-sm md:text-base font-semibold text-slate-100 truncate">
                     {modalState.title}
