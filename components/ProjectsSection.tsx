@@ -139,7 +139,7 @@ const ProjectsSection: React.FC = () => {
     {
       id: 4,
       title: 'Targues Escola de Música',
-      category: 'Landing Page',
+      category: 'Landing Page & Design System',
       description:
         'Plataforma para escola de música com agendamento e apresentação de cursos. Layout moderno e acessível.',
       type: 'website',
@@ -149,14 +149,26 @@ const ProjectsSection: React.FC = () => {
     },
     {
       id: 5,
-      title: 'Mineração da prova ENEM ~ 1.000 questões e 3 relatórios completos',
+      title:
+        'Mineração da prova ENEM ~ 1.000 questões e 3 relatórios completos',
       category: 'Estratégia & Cognição',
       description:
-        'Protocolo estratégico sobre 24 provas e ~1.000 questões integrando três relatórios: Linguagens 2020, Matemática 2020-2026 e DNA microscópico. Anatomia do item, padrões TRI, vocabulário crítico e projeções 2026.',
+        'Protocolo estratégico sobre 24 provas e ~1.000 questões integrando três relatórios: Linguagens 2020, Matemática 2020-2025 e DNA microscópico com aplicações probabilísticas para 2026. Anatomia do item, padrões TRI e vocabulário crítico.',
       type: 'interactive',
       link: PROTOCOLO_ENEM_PATH,
-      imagePath: '/projects/enem-mineracao-cover.svg',
+      imagePath: '/projects/mineracao_enem.png',
       techs: ['ENEM', '~1.000 questões', '3 relatórios', 'TRI'],
+    },
+    {
+      id: 6,
+      title: 'Novo Modelo de Estrutura invisível - Redação ENEM 2026',
+      category: 'Performance & Novo Modelo',
+      description:
+        'O material propõe romper com os textos de "estrutura visível" (fórmulas engessadas que usam conectivos óbvios como "Primeiramente" ou "Em segundo lugar"), ensinando o candidato a construir uma arquitetura lógica implícita, na qual as ideias avançam por gravidade argumentativa e soam como pensamento vivo.',
+      type: 'pdf',
+      link: '/projects/protocolo_redacao_enem_2026.pdf',
+      imagePath: '/projects/estrutura_invisivel.png',
+      techs: ['Redação', 'ENEM', 'Estrutura Invisível'],
     },
   ];
 
@@ -358,90 +370,90 @@ const ProjectsSection: React.FC = () => {
                 ? 'p-0'
                 : 'items-center justify-center p-3 md:p-6'
             }`}
-          onClick={closeModal}
-          role="dialog"
-          aria-modal="true"
-          aria-label={modalState.title || 'Visualização do projeto'}
-        >
-          <div
-            className={`relative bg-neutral-900 overflow-hidden shadow-2xl border border-amber-500/50 flex flex-col transition-all duration-300 ${
-              modalState.mode === 'document'
-                ? documentExpanded
-                  ? 'w-full h-full max-w-none max-h-none rounded-none'
-                  : 'w-full max-w-4xl max-h-[90vh] rounded-xl'
-                : 'max-w-full max-h-full rounded-xl'
-            }`}
-            onClick={(e) => e.stopPropagation()}
+            onClick={closeModal}
+            role="dialog"
+            aria-modal="true"
+            aria-label={modalState.title || 'Visualização do projeto'}
           >
-            {modalState.mode === 'document' && (
-              <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-white/10 bg-neutral-950/95 shrink-0 z-10">
-                <div className="min-w-0 pr-2">
-                  <p className="text-[10px] font-semibold tracking-widest uppercase text-amber-500/90">
-                    Artefato especial · Protocolo ENEM 2026
-                  </p>
-                  <h3 className="text-sm md:text-base font-semibold text-slate-100 truncate">
-                    {modalState.title}
-                  </h3>
+            <div
+              className={`relative bg-neutral-900 overflow-hidden shadow-2xl border border-amber-500/50 flex flex-col transition-all duration-300 ${
+                modalState.mode === 'document'
+                  ? documentExpanded
+                    ? 'w-full h-full max-w-none max-h-none rounded-none'
+                    : 'w-full max-w-4xl max-h-[90vh] rounded-xl'
+                  : 'max-w-full max-h-full rounded-xl'
+              }`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {modalState.mode === 'document' && (
+                <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-white/10 bg-neutral-950/95 shrink-0 z-10">
+                  <div className="min-w-0 pr-2">
+                    <p className="text-[10px] font-semibold tracking-widest uppercase text-amber-500/90">
+                      Artefato especial · Protocolo ENEM 2026
+                    </p>
+                    <h3 className="text-sm md:text-base font-semibold text-slate-100 truncate">
+                      {modalState.title}
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setDocumentExpanded((v) => !v)}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:text-amber-400 hover:bg-white/5 transition-colors"
+                      aria-label={
+                        documentExpanded
+                          ? 'Reduzir painel'
+                          : 'Ampliar em tela cheia'
+                      }
+                    >
+                      {documentExpanded ? (
+                        <Minimize2 size={16} />
+                      ) : (
+                        <Maximize2 size={16} />
+                      )}
+                      <span className="hidden sm:inline">
+                        {documentExpanded ? 'Reduzir' : 'Ampliar'}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={closeModal}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-200 bg-amber-600/20 border border-amber-500/40 hover:bg-amber-600 hover:text-white transition-colors"
+                      aria-label="Fechar protocolo"
+                    >
+                      <X size={16} />
+                      <span className="hidden sm:inline">Fechar</span>
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setDocumentExpanded((v) => !v)}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:text-amber-400 hover:bg-white/5 transition-colors"
-                    aria-label={
-                      documentExpanded
-                        ? 'Reduzir painel'
-                        : 'Ampliar em tela cheia'
-                    }
-                  >
-                    {documentExpanded ? (
-                      <Minimize2 size={16} />
-                    ) : (
-                      <Maximize2 size={16} />
-                    )}
-                    <span className="hidden sm:inline">
-                      {documentExpanded ? 'Reduzir' : 'Ampliar'}
-                    </span>
-                  </button>
+              )}
+
+              {modalState.mode === 'image' && (
+                <>
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-200 bg-amber-600/20 border border-amber-500/40 hover:bg-amber-600 hover:text-white transition-colors"
-                    aria-label="Fechar protocolo"
+                    className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors"
+                    aria-label={`Fechar visualização de ${modalState.title}`}
                   >
-                    <X size={16} />
-                    <span className="hidden sm:inline">Fechar</span>
+                    <X size={24} />
                   </button>
+                  <img
+                    src={modalState.imageUrl || ''}
+                    alt={modalState.title || 'Imagem do Projeto'}
+                    className="max-w-[90vw] max-h-[90vh] object-contain block"
+                    style={{ minHeight: '30vh' }}
+                  />
+                </>
+              )}
+
+              {modalState.mode === 'document' && (
+                <div className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-8 min-h-0">
+                  <ProtocoloMineracaoEnem />
                 </div>
-              </div>
-            )}
-
-            {modalState.mode === 'image' && (
-              <>
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors"
-                  aria-label={`Fechar visualização de ${modalState.title}`}
-                >
-                  <X size={24} />
-                </button>
-                <img
-                  src={modalState.imageUrl || ''}
-                  alt={modalState.title || 'Imagem do Projeto'}
-                  className="max-w-[90vw] max-h-[90vh] object-contain block"
-                  style={{ minHeight: '30vh' }}
-                />
-              </>
-            )}
-
-            {modalState.mode === 'document' && (
-              <div className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-8 min-h-0">
-                <ProtocoloMineracaoEnem />
-              </div>
-            )}
-          </div>
-        </div>,
+              )}
+            </div>
+          </div>,
           document.body,
         )}
     </>
