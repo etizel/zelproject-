@@ -153,10 +153,10 @@ const ProjectsSection: React.FC = () => {
         'Mineração da prova ENEM ~ 1.000 questões e 3 relatórios completos',
       category: 'Estratégia & Cognição',
       description:
-        'Protocolo estratégico sobre 24 provas e ~1.000 questões integrando três relatórios: Linguagens 2020, Matemática 2020-2025 e DNA microscópico com aplicações probabilísticas para 2026. Anatomia do item, padrões TRI e vocabulário crítico.',
+        'Protocolo estratégico sobre 24 provas e ~1.000 questões integrando três relatórios: Linguagens 2020, Matemática 2020-2025 e DNA microscópico com aplicações probabilísticas para 2026. Anatomia do item, padrões TRI e vocabulário crítico.'
       type: 'interactive',
       link: PROTOCOLO_ENEM_PATH,
-      imagePath: '/projects/mineracao_enem.png',
+      imagePath: '/projects/minaracao-enem.png',
       techs: ['ENEM', '~1.000 questões', '3 relatórios', 'TRI'],
     },
     {
