@@ -90,16 +90,10 @@ const ProjectsSection: React.FC = () => {
 
   React.useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        closeModal();
-      }
+      if (event.key === 'Escape') closeModal();
     };
-    if (modalState.isOpen) {
-      window.addEventListener('keydown', handleEscape);
-    }
-    return () => {
-      window.removeEventListener('keydown', handleEscape);
-    };
+    if (modalState.isOpen) window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
   }, [modalState.isOpen]);
 
   const projects: Project[] = [
@@ -149,11 +143,9 @@ const ProjectsSection: React.FC = () => {
     },
     {
       id: 5,
-      title:
-        'Mineração da prova ENEM ~ 1.000 questões e 3 relatórios completos',
+      title: 'Mineração da prova ENEM ~ 1.000 questões e 3 relatórios',
       category: 'Estratégia & Cognição',
-      description:
-        'Protocolo estratégico sobre 24 provas e ~1.000 questões integrando três relatórios: Linguagens 2020, Matemática 2020-2025 e DNA microscópico com aplicações probabilísticas para 2026. Anatomia do item, padrões TRI e vocabulário crítico.',
+      description: `Protocolo estratégico sobre 24 provas e ~1.000 questões integrando três relatórios: Linguagens 2020, Matemática 2020-2025 e DNA microscópico com aplicações probabilísticas para 2026. Anatomia do item, padrões TRI e vocabulário crítico.`,
       type: 'interactive',
       link: PROTOCOLO_ENEM_PATH,
       imagePath: '/projects/minaracao-enem.png',
@@ -164,7 +156,7 @@ const ProjectsSection: React.FC = () => {
       title: 'Novo Modelo de Estrutura invisível - Redação ENEM 2026',
       category: 'Performance & Novo Modelo',
       description:
-        'O material propõe romper com os textos de "estrutura visível" (fórmulas engessadas que usam conectivos óbvios como "Primeiramente" ou "Em segundo lugar"), ensinando o candidato a construir uma arquitetura lógica implícita, na qual as ideias avançam por gravidade argumentativa e soam como pensamento vivo.',
+        'O material propõe romper com os textos de "estrutura visível", ensinando o candidato a construir uma arquitetura lógica implícita, na qual as ideias avançam por gravidade argumentativa.',
       type: 'pdf',
       link: '/projects/protocolo_redacao_enem_2026.pdf',
       imagePath: '/projects/estrutura_invisivel.png',
@@ -217,7 +209,6 @@ const ProjectsSection: React.FC = () => {
               'radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 60%)',
           }}
         />
-
         <div className="max-w-7xl mx-auto mb-16 text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-extrabold font-mono tracking-tight drop-shadow-lg mb-4">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-slate-200 to-slate-500">
@@ -237,24 +228,15 @@ const ProjectsSection: React.FC = () => {
           {projects.map((project) => (
             <div
               key={project.id}
-              className={`group relative rounded-3xl border bg-neutral-900/50 backdrop-blur-sm overflow-hidden transition-all duration-500 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/10 flex flex-col hover:-translate-y-1 ${
-                project.type === 'interactive'
-                  ? 'border-amber-500/25 ring-1 ring-amber-500/10'
-                  : 'border-white/10'
-              }`}
+              className={`group relative rounded-3xl border bg-neutral-900/50 backdrop-blur-sm overflow-hidden transition-all duration-500 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/10 flex flex-col hover:-translate-y-1 ${project.type === 'interactive' ? 'border-amber-500/25 ring-1 ring-amber-500/10' : 'border-white/10'}`}
             >
               <div
-                className={`h-48 md:h-64 w-full overflow-hidden relative bg-neutral-800 ${
-                  project.imagePath || project.type === 'interactive'
-                    ? 'cursor-pointer'
-                    : ''
-                }`}
+                className={`h-48 md:h-64 w-full overflow-hidden relative bg-neutral-800 ${project.imagePath || project.type === 'interactive' ? 'cursor-pointer' : ''}`}
                 onClick={() => {
-                  if (project.type === 'interactive') {
-                    openDocumentModal(project.title, project.link);
-                  } else if (project.imagePath) {
-                    openImageModal(project.imagePath, project.title);
-                  }
+                  project.type === 'interactive'
+                    ? openDocumentModal(project.title, project.link)
+                    : project.imagePath &&
+                      openImageModal(project.imagePath, project.title);
                 }}
               >
                 {project.imagePath ? (
@@ -262,21 +244,13 @@ const ProjectsSection: React.FC = () => {
                     src={project.imagePath}
                     alt={project.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.parentElement?.classList.add(
-                        'fallback-gradient',
-                      );
-                    }}
                   />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-neutral-800 to-neutral-700 flex items-center justify-center text-6xl">
                     {getThemeIcon(project.id)}
                   </div>
                 )}
-
                 <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-neutral-950/40 to-transparent" />
-
                 <div className="absolute top-4 left-4 flex flex-wrap gap-2">
                   <span className="px-3 py-1 rounded-full text-xs font-semibold bg-black/50 border border-amber-500/20 text-amber-400 backdrop-blur-md">
                     {project.category}
@@ -300,11 +274,9 @@ const ProjectsSection: React.FC = () => {
                     </h3>
                   </div>
                 </div>
-
                 <p className="text-slate-400 mb-6 line-clamp-3 text-sm md:text-base flex-1 font-light">
                   {project.description}
                 </p>
-
                 <div className="flex flex-wrap gap-2 mb-8">
                   {project.techs.map((tech, idx) => (
                     <span
@@ -333,17 +305,8 @@ const ProjectsSection: React.FC = () => {
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`
-                    w-full py-3 px-6 rounded-xl flex items-center justify-center gap-3 font-semibold text-base transition-all duration-300
-                    ${
-                      project.type === 'pdf'
-                        ? 'bg-amber-600/10 text-amber-400 border border-amber-600/20 hover:bg-amber-600 hover:text-white hover:border-amber-600'
-                        : 'bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10 hover:text-white'
-                    }
-                  `}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
+                    className={`w-full py-3 px-6 rounded-xl flex items-center justify-center gap-3 font-semibold text-base transition-all duration-300 ${project.type === 'pdf' ? 'bg-amber-600/10 text-amber-400 border border-amber-600/20 hover:bg-amber-600 hover:text-white hover:border-amber-600' : 'bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10 hover:text-white'}`}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <span>
                       {project.type === 'pdf'
@@ -365,31 +328,20 @@ const ProjectsSection: React.FC = () => {
         modalState.isOpen &&
         createPortal(
           <div
-            className={`fixed inset-0 z-[9999] flex bg-black/85 backdrop-blur-md transition-opacity duration-300 ${
-              modalState.mode === 'document' && documentExpanded
-                ? 'p-0'
-                : 'items-center justify-center p-3 md:p-6'
-            }`}
+            className={`fixed inset-0 z-[9999] flex bg-black/85 backdrop-blur-md transition-opacity duration-300 ${modalState.mode === 'document' && documentExpanded ? 'p-0' : 'items-center justify-center p-3 md:p-6'}`}
             onClick={closeModal}
             role="dialog"
             aria-modal="true"
-            aria-label={modalState.title || 'Visualização do projeto'}
           >
             <div
-              className={`relative bg-neutral-900 overflow-hidden shadow-2xl border border-amber-500/50 flex flex-col transition-all duration-300 ${
-                modalState.mode === 'document'
-                  ? documentExpanded
-                    ? 'w-full h-full max-w-none max-h-none rounded-none'
-                    : 'w-full max-w-4xl max-h-[90vh] rounded-xl'
-                  : 'max-w-full max-h-full rounded-xl'
-              }`}
+              className={`relative bg-neutral-900 overflow-hidden shadow-2xl border border-amber-500/50 flex flex-col transition-all duration-300 ${modalState.mode === 'document' ? (documentExpanded ? 'w-full h-full max-w-none max-h-none rounded-none' : 'w-full max-w-4xl max-h-[90vh] rounded-xl') : 'max-w-full max-h-full rounded-xl'}`}
               onClick={(e) => e.stopPropagation()}
             >
               {modalState.mode === 'document' && (
                 <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-white/10 bg-neutral-950/95 shrink-0 z-10">
                   <div className="min-w-0 pr-2">
                     <p className="text-[10px] font-semibold tracking-widest uppercase text-amber-500/90">
-                      Artefato especial · Protocolo ENEM 2026
+                      Artefato especial · Protocolo ENEM
                     </p>
                     <h3 className="text-sm md:text-base font-semibold text-slate-100 truncate">
                       {modalState.title}
@@ -400,11 +352,6 @@ const ProjectsSection: React.FC = () => {
                       type="button"
                       onClick={() => setDocumentExpanded((v) => !v)}
                       className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-300 border border-white/10 hover:border-amber-500/40 hover:text-amber-400 hover:bg-white/5 transition-colors"
-                      aria-label={
-                        documentExpanded
-                          ? 'Reduzir painel'
-                          : 'Ampliar em tela cheia'
-                      }
                     >
                       {documentExpanded ? (
                         <Minimize2 size={16} />
@@ -419,7 +366,6 @@ const ProjectsSection: React.FC = () => {
                       type="button"
                       onClick={closeModal}
                       className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-200 bg-amber-600/20 border border-amber-500/40 hover:bg-amber-600 hover:text-white transition-colors"
-                      aria-label="Fechar protocolo"
                     >
                       <X size={16} />
                       <span className="hidden sm:inline">Fechar</span>
@@ -434,7 +380,6 @@ const ProjectsSection: React.FC = () => {
                     type="button"
                     onClick={closeModal}
                     className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors"
-                    aria-label={`Fechar visualização de ${modalState.title}`}
                   >
                     <X size={24} />
                   </button>
@@ -448,7 +393,7 @@ const ProjectsSection: React.FC = () => {
               )}
 
               {modalState.mode === 'document' && (
-                <div className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-8 min-h-0">
+                <div className="flex-1 overflow-y-auto overscroll-contain p-4 md:p-8 min-h-0 bg-neutral-950">
                   <ProtocoloMineracaoEnem />
                 </div>
               )}

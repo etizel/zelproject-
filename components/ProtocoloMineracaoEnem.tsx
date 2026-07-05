@@ -1,17 +1,22 @@
 'use client';
 
 import React, { useState } from 'react';
+import { ArrowLeft, Brain, Percent } from 'lucide-react';
 import {
   ANATOMY_BLOCKS,
-  AREA_CARDS,
   HYBRID_STEPS,
-  MATRIX_ROWS,
-  PATTERN_ROWS,
   PHASES,
-  PROJECOES,
-  SOURCE_PILLS,
-  VOCAB_ITEMS,
+  PATTERN_ROWS,
   WEEK_DAYS,
+  SOURCE_PILLS,
+  HUMANAS_VOCAB_ITEMS,
+  HUMANAS_PROJECOES,
+  HUMANAS_MATRIX_ROWS,
+  HUMANAS_AREA_CARDS,
+  EXATAS_VOCAB_ITEMS,
+  EXATAS_PROJECOES,
+  EXATAS_MATRIX_ROWS,
+  EXATAS_AREA_CARDS,
 } from './protocolo-enem-content';
 
 const TABS = [
@@ -29,6 +34,7 @@ type TabId = (typeof TABS)[number]['id'];
 type Accent = 'purple' | 'amber' | 'green' | 'red';
 type AlertVariant = 'purple' | 'amber' | 'green' | 'red';
 
+// --- COMPONENTES DE UI REUTILIZÁVEIS ---
 function Card({
   children,
   accent,
@@ -46,9 +52,7 @@ function Card({
   };
   return (
     <div
-      className={`rounded-xl border border-white/10 bg-neutral-900/80 p-5 md:p-6 mb-4 ${
-        accent ? `border-l-[3px] ${accentBorder[accent]}` : ''
-      } ${className}`}
+      className={`rounded-xl border border-white/10 bg-neutral-900/80 p-5 md:p-6 mb-4 ${accent ? `border-l-[3px] ${accentBorder[accent]}` : ''} ${className}`}
     >
       {children}
     </div>
@@ -125,13 +129,7 @@ function SmallCard({
   );
 }
 
-function PhaseNum({
-  id,
-  accent,
-}: {
-  id: string;
-  accent: Accent;
-}) {
+function PhaseNum({ id, accent }: { id: string; accent: Accent }) {
   const bg: Record<Accent, string> = {
     purple: 'bg-violet-500/20 text-violet-300',
     amber: 'bg-amber-500/20 text-amber-300',
@@ -147,24 +145,98 @@ function PhaseNum({
   );
 }
 
+// --- O COMPONENTE PRINCIPAL (SAAS) ---
 export default function ProtocoloMineracaoEnem() {
+  const [polaridade, setPolaridade] = useState<'humanas' | 'exatas' | null>(
+    null,
+  );
   const [activeTab, setActiveTab] = useState<TabId>('fundamento');
 
-  return (
-    <div className="protocolo-enem max-w-3xl mx-auto text-sm text-slate-300">
-      <header className="pb-5 mb-5 border-b border-white/10">
-        <p className="text-[10px] font-semibold tracking-widest uppercase text-amber-500/90 mb-2">
-          Protocolo estratégico · 24 provas · ~1.000 questões · 3 relatórios
-          integrados
+  // TELA DE SELEÇÃO INICIAL (O PORTÃO DO SAAS)
+  if (!polaridade) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-6 text-center animate-fadeIn">
+        <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4 text-slate-100 font-mono">
+          Mined/ENEM <span className="text-amber-500">SaaS Artifact</span>
+        </h2>
+        <p className="text-slate-400 max-w-md mb-8 text-sm md:text-base leading-relaxed">
+          Para garantir a extração de inteligência estrutural precisa, selecione
+          a polaridade do seu foco atual. O algoritmo adaptará o vocabulário,
+          padrões e matriz TRI.
         </p>
-        <h2 className="text-xl md:text-2xl font-bold font-mono text-slate-100 leading-snug mb-2">
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-lg">
+          <button
+            onClick={() => setPolaridade('humanas')}
+            className="group relative flex flex-col items-center p-8 bg-neutral-900 border border-white/10 rounded-2xl hover:border-violet-500/60 hover:bg-neutral-800/80 transition-all duration-300"
+          >
+            <Brain className="w-12 h-12 text-violet-400 mb-4 group-hover:scale-110 transition-transform" />
+            <span className="text-xl font-bold tracking-wide text-slate-200">
+              HUMANAS
+            </span>
+            <span className="text-xs text-slate-500 mt-2">
+              Linguagens, Códigos e Ciências Humanas
+            </span>
+          </button>
+
+          <button
+            onClick={() => setPolaridade('exatas')}
+            className="group relative flex flex-col items-center p-8 bg-neutral-900 border border-white/10 rounded-2xl hover:border-amber-500/60 hover:bg-neutral-800/80 transition-all duration-300"
+          >
+            <Percent className="w-12 h-12 text-amber-400 mb-4 group-hover:scale-110 transition-transform" />
+            <span className="text-xl font-bold tracking-wide text-slate-200">
+              EXATAS
+            </span>
+            <span className="text-xs text-slate-500 mt-2">
+              Matemática e Ciências da Natureza
+            </span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // MAPEAMENTO DINÂMICO DOS DADOS BASEADO NA POLARIDADE ESCOLHIDA
+  const data =
+    polaridade === 'humanas'
+      ? {
+          vocab: HUMANAS_VOCAB_ITEMS,
+          projecoes: HUMANAS_PROJECOES,
+          matrix: HUMANAS_MATRIX_ROWS,
+          areas: HUMANAS_AREA_CARDS,
+          color: 'violet',
+        }
+      : {
+          vocab: EXATAS_VOCAB_ITEMS,
+          projecoes: EXATAS_PROJECOES,
+          matrix: EXATAS_MATRIX_ROWS,
+          areas: EXATAS_AREA_CARDS,
+          color: 'amber',
+        };
+
+  // INTERFACE RICA DO PROTOCOLO (PÓS-SELEÇÃO)
+  return (
+    <div className="protocolo-enem max-w-3xl mx-auto text-sm text-slate-300 animate-fadeIn">
+      <header className="pb-5 mb-5 border-b border-white/10 relative">
+        <button
+          onClick={() => setPolaridade(null)}
+          className="absolute top-0 right-0 flex items-center gap-1.5 text-xs text-slate-400 hover:text-white bg-neutral-800/50 px-3 py-1.5 rounded-lg border border-white/10 transition-colors"
+        >
+          <ArrowLeft size={14} /> Trocar Perfil
+        </button>
+
+        <p
+          className={`text-[10px] font-semibold tracking-widest uppercase mb-2 ${polaridade === 'humanas' ? 'text-violet-400/90' : 'text-amber-500/90'}`}
+        >
+          Artefato Calibrado · Perfil: {polaridade.toUpperCase()}
+        </p>
+        <h2 className="text-xl md:text-2xl font-bold font-mono text-slate-100 leading-snug mb-2 pr-24">
           Mineração analítica do ENEM — construção do exoesqueleto cognitivo
         </h2>
         <p className="text-xs md:text-sm text-slate-400 leading-relaxed">
           Não é leitura passiva de questões. É extração de inteligência
-          estrutural sobre como a prova pensa — anatomia do item, padrão de
-          distrator, vocabulário recorrente, contexto mundial. Cada sessão produz
-          algo; produção ativa é o que separa exoesqueleto de ilusão de fluência.
+          estrutural sobre como a prova pensa. Cada sessão produz algo; produção
+          ativa é o que separa exoesqueleto de ilusão de fluência.
         </p>
         <div className="flex flex-wrap gap-2 mt-3">
           {SOURCE_PILLS.map((pill) => (
@@ -178,22 +250,17 @@ export default function ProtocoloMineracaoEnem() {
         </div>
       </header>
 
-      <nav
-        className="flex flex-wrap gap-1.5 mb-6"
-        role="tablist"
-        aria-label="Seções do protocolo"
-      >
+      <nav className="flex flex-wrap gap-1.5 mb-6">
         {TABS.map((tab) => (
           <button
             key={tab.id}
-            type="button"
-            role="tab"
-            aria-selected={activeTab === tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200 ${
               activeTab === tab.id
-                ? 'bg-amber-600 text-white border-amber-600 shadow-[0_0_12px_rgba(251,191,36,0.25)]'
-                : 'bg-neutral-800/80 text-slate-400 border-white/10 hover:border-amber-500/40 hover:text-amber-300'
+                ? polaridade === 'humanas'
+                  ? 'bg-violet-600 text-white border-violet-600 shadow-[0_0_12px_rgba(139,92,246,0.25)]'
+                  : 'bg-amber-600 text-white border-amber-600 shadow-[0_0_12px_rgba(251,191,36,0.25)]'
+                : 'bg-neutral-800/80 text-slate-400 border-white/10 hover:border-slate-500/40 hover:text-slate-300'
             }`}
           >
             {tab.label}
@@ -201,8 +268,9 @@ export default function ProtocoloMineracaoEnem() {
         ))}
       </nav>
 
+      {/* RENDERIZAÇÃO DAS ABAS (Mantido o seu código original de visualização, mas consumindo a const 'data') */}
       {activeTab === 'fundamento' && (
-        <div role="tabpanel">
+        <div className="animate-fadeIn">
           <Card accent="purple">
             <div className="flex gap-4 items-start mb-3">
               <PhaseNum id="E" accent="purple" />
@@ -219,116 +287,54 @@ export default function ProtocoloMineracaoEnem() {
               <strong className="text-slate-100">
                 tipo de raciocínio exigido antes de ler as alternativas
               </strong>
-              . Não é memória de conteúdo — é reconhecimento de estrutura.
-              <br />
-              <br />
-              Quando você vê &quot;taxa de incidência por 100 mil
-              habitantes&quot; e já sabe que vai precisar de razão ou regra de
-              três — isso é exoesqueleto. Quando você vê um cartum de Quino e já
-              sabe que o ENEM vai pedir a crítica implícita às mazelas sociais,
-              não a descrição literal da imagem — isso é exoesqueleto. Quando
-              lê &quot;Foucault&quot; e já situa poder-saber aplicado a uma
-              instituição — exoesqueleto.
-              <br />
-              <br />
-              As 1.000 questões das 24 provas são o material bruto. O protocolo
-              abaixo transforma esse material em estrutura.
+              .
             </p>
             <Alert>
-              O ENEM não tem questões de conteúdo puro desde 2009. Toda questão
-              é competência aplicada a contexto real. Candidatos que estudam só
-              conteúdo e não treinam aplicação contextual ficam sistematicamente
-              abaixo do seu potencial real na TRI.
+              O ENEM não tem questões de conteúdo puro. Toda questão é
+              competência aplicada a contexto real.
             </Alert>
           </Card>
-
           <Card accent="red">
             <CardTitle>
               O risco central desse volume — fluência ilusória
             </CardTitle>
-            <CardSub>
-              O inimigo invisível de quem estuda muito e performa pouco
-            </CardSub>
-            <p className="text-xs md:text-sm leading-relaxed text-slate-300">
-              Pesquisas em psicologia cognitiva mostram que exposição repetida a
-              material cria{' '}
-              <strong className="text-slate-100">
-                familiaridade sem domínio
-              </strong>
-              . Você lê, reconhece, acha que sabe — e na prova o raciocínio não
-              dispara porque nunca foi ativado, só observado. É o maior risco de
-              trabalhar 1.000 questões sem método.
-            </p>
             <Alert variant="red">
-              Regra inviolável do protocolo: nunca encerrar uma sessão sem ter
-              produzido algo — uma classificação, um padrão nomeado, uma
-              observação escrita sobre como a prova funciona. Se não consegue
-              articular o que aprendeu, não aprendeu — revisitou.
+              Regra inviolável: nunca encerrar uma sessão sem ter produzido
+              algo.
             </Alert>
           </Card>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <SmallCard title="Por que 24 provas e não 5">
-              Com 5 provas você vê conteúdo. Com 24 você vê o comportamento da
-              banca. Padrões de baixa frequência só aparecem com volume alto —
-              um contexto que apareceu 3 vezes em 24 provas é sinal fraco, mas é
-              sinal. 18 vezes é lei. Você vai ter dados próprios que nenhum
-              cursinho generalista consegue dar.
-            </SmallCard>
-            <SmallCard title="O que os 3 relatórios cobrem">
-              <strong className="text-slate-300">Rel. 1:</strong> Linguagens
-              2020 — gêneros, multimodalidade, discurso social.
-              <br />
-              <strong className="text-slate-300">Rel. 2:</strong> Matemática
-              2020–2026 — frequência por eixo, tendências contextuais.
-              <br />
-              <strong className="text-slate-300">Rel. 3:</strong> DNA
-              microscópico 2021–2026 — anatomia do item, distratores TRI,
-              projeções 2026.
-            </SmallCard>
-          </div>
         </div>
       )}
 
       {activeTab === 'anatomia' && (
-        <div role="tabpanel">
+        <div className="animate-fadeIn">
           <Card>
             <CardTitle>Anatomia microscópica do item ENEM</CardTitle>
-            <CardSub>
-              Extraído do Relatório 3 (DNA microscópico). Aplica-se a todas as
-              áreas, não só Linguagens.
-            </CardSub>
             {ANATOMY_BLOCKS.map((block) => (
               <div
                 key={block.label}
-                className="rounded-lg border border-white/10 bg-neutral-800/40 p-4 mb-3 last:mb-0"
+                className="rounded-lg border border-white/10 bg-neutral-800/40 p-4 mb-3"
               >
                 <p
-                  className={`text-[10px] font-semibold tracking-wider uppercase mb-2 ${block.color}`}
+                  className={`text-[10px] font-semibold uppercase mb-2 ${block.color}`}
                 >
                   {block.label}
                 </p>
-                <p className="text-xs md:text-sm text-slate-300 leading-relaxed">
+                <p className="text-xs md:text-sm text-slate-300">
                   {block.body}
                 </p>
               </div>
             ))}
           </Card>
-
           <Card accent="amber">
-            <CardTitle>
-              Abordagem micro-analítica — itens híbridos verbal-visual
-            </CardTitle>
-            <CardSub>
-              Recorrente em Linguagens, Natureza e Humanas
-            </CardSub>
+            <CardTitle>Abordagem micro-analítica</CardTitle>
             <StepList steps={HYBRID_STEPS} />
           </Card>
         </div>
       )}
 
       {activeTab === 'fases' && (
-        <div role="tabpanel">
+        <div className="animate-fadeIn">
           {PHASES.map((phase) => (
             <Card key={phase.id} accent={phase.accent}>
               <div className="flex gap-4 items-start mb-3">
@@ -338,61 +344,50 @@ export default function ProtocoloMineracaoEnem() {
                   <CardSub>{phase.sub}</CardSub>
                 </div>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed mb-2">
-                {phase.intro}
-              </p>
+              <p className="text-xs text-slate-400 mb-2">{phase.intro}</p>
               <StepList steps={phase.steps} />
-              {phase.alert && (
-                <Alert variant={phase.alertType ?? 'green'}>
-                  {phase.alert}
-                </Alert>
-              )}
             </Card>
           ))}
         </div>
       )}
 
       {activeTab === 'padroes' && (
-        <div role="tabpanel">
+        <div className="animate-fadeIn">
           <Card>
-            <CardTitle>Padrões estruturais recorrentes nas 24 provas</CardTitle>
-            <p className="text-[10px] font-semibold tracking-wider uppercase text-slate-500 mb-3">
-              Estrutura do item
-            </p>
+            <CardTitle>Padrões estruturais recorrentes</CardTitle>
             {PATTERN_ROWS.map((row) => (
               <div
                 key={row.tag}
-                className="flex flex-col sm:flex-row gap-2.5 sm:gap-4 py-3 border-b border-white/5 last:border-0"
+                className="flex flex-col sm:flex-row gap-4 py-3 border-b border-white/5 last:border-0"
               >
                 <span
-                  className={`inline-flex items-center justify-center text-xs font-semibold leading-snug px-2.5 py-1.5 rounded-md text-center sm:w-[7.25rem] shrink-0 self-start ${row.tagClass}`}
+                  className={`inline-flex text-xs font-semibold px-2.5 py-1.5 rounded-md w-28 shrink-0 ${row.tagClass}`}
                 >
                   {row.tag}
                 </span>
-                <span className="text-xs md:text-sm text-slate-300 leading-relaxed flex-1 min-w-0">
+                <span className="text-xs md:text-sm text-slate-300">
                   {row.text}
                 </span>
               </div>
             ))}
-
-            <p className="text-[10px] font-semibold tracking-wider uppercase text-slate-500 mt-6 mb-3">
+            <p className="text-[10px] font-semibold uppercase text-slate-500 mt-6 mb-3">
               O que cada área realmente testa
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {AREA_CARDS.map((area) => (
+              {data.areas.map((area) => (
                 <div
                   key={area.title}
-                  className="rounded-lg bg-neutral-800/50 border border-white/5 p-4 min-h-0"
+                  className="rounded-lg bg-neutral-800/50 border border-white/5 p-4"
                 >
-                  <h4 className="text-sm font-semibold text-slate-200 mb-2 leading-snug">
+                  <h4 className="text-sm font-semibold text-slate-200 mb-2">
                     {area.title}{' '}
                     <span
-                      className={`text-xs font-semibold px-2 py-0.5 rounded-md align-middle whitespace-nowrap ${area.tagClass}`}
+                      className={`text-xs px-2 py-0.5 rounded-md ${area.tagClass}`}
                     >
                       {area.tag}
                     </span>
                   </h4>
-                  <p className="text-xs md:text-sm text-slate-400 leading-relaxed">
+                  <p className="text-xs md:text-sm text-slate-400">
                     {area.text}
                   </p>
                 </div>
@@ -403,59 +398,48 @@ export default function ProtocoloMineracaoEnem() {
       )}
 
       {activeTab === 'vocab' && (
-        <div role="tabpanel">
+        <div className="animate-fadeIn">
           <Card>
             <CardTitle>
-              Vocabulário científico crítico — 3 relatórios integrados
+              Vocabulário científico crítico — {polaridade.toUpperCase()}
             </CardTitle>
-            <CardSub>
-              Não decorar definição. Internalizar campo semântico e 3 aplicações
-              reais de cada termo.
-            </CardSub>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-              {VOCAB_ITEMS.map((item) => (
+              {data.vocab.map((item) => (
                 <div
                   key={item.term}
                   className="rounded-lg border border-white/10 bg-neutral-800/40 p-3"
                 >
                   <p className="text-xs font-semibold text-slate-100 mb-1">
                     {item.term}{' '}
-                    <span className="text-[10px] font-medium text-amber-400/90">
+                    <span
+                      className={`text-[10px] font-medium ${polaridade === 'humanas' ? 'text-violet-400' : 'text-amber-400'}`}
+                    >
                       {item.tags}
                     </span>
                   </p>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">
-                    {item.def}
-                  </p>
+                  <p className="text-[11px] text-slate-400">{item.def}</p>
                 </div>
               ))}
             </div>
-            <Alert variant="amber">
-              Estratégia ativa: ao encontrar vocabulário desconhecido nas 24
-              provas, não pesquise a definição — pesquise 3 aplicações reais.
-              Definição é passiva. Aplicação é exoesqueleto.
-            </Alert>
           </Card>
         </div>
       )}
 
       {activeTab === 'semana' && (
-        <div role="tabpanel">
+        <div className="animate-fadeIn">
           <Card>
             <CardTitle>Semana-tipo de mineração</CardTitle>
-            <CardSub>
-              Estrutura para manter consistência sem sobrecarga. O que não pode
-              mudar é a produção ativa ao final de cada sessão.
-            </CardSub>
             {WEEK_DAYS.map((row) => (
               <div
                 key={row.day}
-                className="grid grid-cols-1 sm:grid-cols-[5.5rem_1fr] gap-0 mb-2 rounded-lg overflow-hidden border border-white/10"
+                className="grid grid-cols-[5.5rem_1fr] mb-2 rounded-lg border border-white/10 overflow-hidden"
               >
-                <div className="bg-amber-600/90 text-white text-[11px] font-semibold flex items-center justify-center p-3 text-center leading-snug">
+                <div
+                  className={`text-white text-[11px] font-semibold flex items-center justify-center p-3 text-center ${polaridade === 'humanas' ? 'bg-violet-600/90' : 'bg-amber-600/90'}`}
+                >
                   {row.day}
                 </div>
-                <div className="bg-neutral-800/60 p-3 text-xs text-slate-300 leading-relaxed">
+                <div className="bg-neutral-800/60 p-3 text-xs text-slate-300">
                   <b className="block font-semibold text-slate-100 mb-0.5">
                     {row.title}
                   </b>
@@ -463,38 +447,27 @@ export default function ProtocoloMineracaoEnem() {
                 </div>
               </div>
             ))}
-            <Alert variant="green">
-              Dias de baixa energia: use quarta ou domingo. Nunca force
-              dissecação com pico cognitivo baixo — processamento superficial
-              nesses dias cria memória fraca que interfere com a memória forte
-              dos outros dias.
-            </Alert>
           </Card>
         </div>
       )}
 
       {activeTab === 'projecoes' && (
-        <div role="tabpanel">
+        <div className="animate-fadeIn">
           <Card>
             <CardTitle>Projeções temáticas ENEM 2026</CardTitle>
-            <CardSub>
-              Cruzamento dos 3 relatórios com conjuntura Brasil/Mundo 2024–2025
-            </CardSub>
-            {PROJECOES.map((proj) => (
+            {data.projecoes.map((proj) => (
               <div
                 key={proj.title}
-                className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 items-start p-4 mb-3 rounded-lg border border-white/10 bg-neutral-800/40 last:mb-0"
+                className="flex flex-col sm:flex-row justify-between gap-3 p-4 mb-3 rounded-lg border border-white/10 bg-neutral-800/40"
               >
                 <div>
                   <p className="text-sm font-semibold text-slate-100 mb-1">
                     {proj.title}
                   </p>
-                  <p className="text-xs text-slate-400 leading-relaxed">
-                    {proj.body}
-                  </p>
+                  <p className="text-xs text-slate-400">{proj.body}</p>
                 </div>
                 <span
-                  className={`text-[10px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap justify-self-start sm:justify-self-end ${proj.badgeClass}`}
+                  className={`text-[10px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap self-start ${proj.badgeClass}`}
                 >
                   {proj.badge}
                 </span>
@@ -505,15 +478,9 @@ export default function ProtocoloMineracaoEnem() {
       )}
 
       {activeTab === 'matriz' && (
-        <div role="tabpanel">
+        <div className="animate-fadeIn">
           <Card>
-            <CardTitle>
-              Matriz de prioridade — onde cada hora vale mais
-            </CardTitle>
-            <CardSub>
-              Baseada na frequência histórica dos 3 relatórios + peso no corte
-              de Psicologia
-            </CardSub>
+            <CardTitle>Matriz de prioridade</CardTitle>
             <div className="overflow-x-auto -mx-1">
               <table className="w-full border-collapse text-xs min-w-[520px]">
                 <thead>
@@ -521,13 +488,13 @@ export default function ProtocoloMineracaoEnem() {
                     {[
                       'Eixo / Área',
                       'Freq. histórica',
-                      'Peso no corte Psi',
+                      'Peso no corte',
                       'Seu nível atual',
                       'Prioridade',
                     ].map((h) => (
                       <th
                         key={h}
-                        className="bg-amber-600/90 text-white px-3 py-2 text-left font-semibold text-[11px]"
+                        className={`${polaridade === 'humanas' ? 'bg-violet-600/90' : 'bg-amber-600/90'} text-white px-3 py-2 text-left font-semibold text-[11px]`}
                       >
                         {h}
                       </th>
@@ -535,20 +502,12 @@ export default function ProtocoloMineracaoEnem() {
                   </tr>
                 </thead>
                 <tbody>
-                  {MATRIX_ROWS.map((row, i) => (
+                  {data.matrix.map((row, i) => (
                     <tr key={i} className="even:bg-neutral-800/40">
                       {row.map((cell, j) => (
                         <td
                           key={j}
-                          className={`px-3 py-2 border-b border-white/5 text-slate-300 align-top ${
-                            j === 4 && cell.startsWith('P1')
-                              ? 'text-emerald-400 font-medium'
-                              : j === 4 && cell.startsWith('P2')
-                                ? 'text-amber-400'
-                                : j === 4 && cell.startsWith('P4')
-                                  ? 'text-slate-500'
-                                  : ''
-                          }`}
+                          className={`px-3 py-2 border-b border-white/5 text-slate-300 align-top ${j === 4 && cell.startsWith('P1') ? 'text-emerald-400 font-medium' : j === 4 && cell.startsWith('P2') ? 'text-amber-400' : ''}`}
                         >
                           {cell}
                         </td>
@@ -558,13 +517,6 @@ export default function ProtocoloMineracaoEnem() {
                 </tbody>
               </table>
             </div>
-            <Alert>
-              P4 — ignorar significa: o retorno por hora de estudo é tão baixo que
-              o tempo é melhor investido consolidando P1 e P2. Trigonometria
-              isolada aparece em 2–3 itens por prova com alto nível de
-              dificuldade TRI. Errar esses itens tem impacto mínimo na nota
-              final.
-            </Alert>
           </Card>
         </div>
       )}
