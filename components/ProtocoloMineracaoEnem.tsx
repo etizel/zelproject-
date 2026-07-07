@@ -489,7 +489,6 @@ export default function ProtocoloMineracaoEnem() {
                       'Eixo / Área',
                       'Freq. histórica',
                       'Peso no corte',
-                      'Seu nível atual',
                       'Prioridade',
                     ].map((h) => (
                       <th

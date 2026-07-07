@@ -13,6 +13,8 @@ import {
   X,
   Maximize2,
   Minimize2,
+  Share2, // <-- Ícone adicionado
+  Check, // <-- Ícone adicionado
 } from 'lucide-react';
 import ProtocoloMineracaoEnem from '@/components/ProtocoloMineracaoEnem';
 
@@ -47,11 +49,9 @@ const ProjectsSection: React.FC = () => {
   });
   const [documentExpanded, setDocumentExpanded] = useState(false);
   const [portalMounted, setPortalMounted] = useState(false);
+  const [copied, setCopied] = useState(false); // Estado para o botão de copiar
 
-  useEffect(() => {
-    setPortalMounted(true);
-  }, []);
-
+  // Lógica de abertura do modal
   const openImageModal = (imageUrl: string, title: string) => {
     setDocumentExpanded(false);
     setModalState({
@@ -74,6 +74,10 @@ const ProjectsSection: React.FC = () => {
       documentUrl,
     });
     document.body.style.overflow = 'hidden';
+    // Atualiza a URL com o hash silenciosamente quando abre o modal
+    if (documentUrl === PROTOCOLO_ENEM_PATH) {
+      window.history.replaceState(null, '', '#protocolo-enem');
+    }
   };
 
   const closeModal = () => {
@@ -86,7 +90,35 @@ const ProjectsSection: React.FC = () => {
       documentUrl: null,
     });
     document.body.style.overflow = 'unset';
+    // Remove o hash da URL silenciosamente ao fechar
+    window.history.replaceState(null, '', window.location.pathname);
   };
+
+  // Função para copiar o link para o clipboard
+  const handleCopyLink = () => {
+    const shareLink = `${window.location.origin}${window.location.pathname}#protocolo-enem`;
+    navigator.clipboard.writeText(shareLink);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  useEffect(() => {
+    setPortalMounted(true);
+
+    // Deep Linking: Lê a URL ao carregar a página e abre o modal se tiver o hash
+    if (
+      typeof window !== 'undefined' &&
+      window.location.hash === '#protocolo-enem'
+    ) {
+      setTimeout(() => {
+        openDocumentModal(
+          'Mineração da prova ENEM ~ 1.000 questões e 3 relatórios',
+          PROTOCOLO_ENEM_PATH,
+        );
+      }, 500); // Pequeno atraso para a animação da página rodar suave
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -348,6 +380,22 @@ const ProjectsSection: React.FC = () => {
                     </h3>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
+                    {/* BOTÃO COPIAR LINK AQUI */}
+                    <button
+                      type="button"
+                      onClick={handleCopyLink}
+                      className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border transition-all ${
+                        copied
+                          ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50'
+                          : 'text-slate-300 border-white/10 hover:border-amber-500/40 hover:text-amber-400 hover:bg-white/5'
+                      }`}
+                    >
+                      {copied ? <Check size={16} /> : <Share2 size={16} />}
+                      <span className="hidden sm:inline">
+                        {copied ? 'Copiado!' : 'Copiar Link'}
+                      </span>
+                    </button>
+
                     <button
                       type="button"
                       onClick={() => setDocumentExpanded((v) => !v)}
